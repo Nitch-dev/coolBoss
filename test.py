@@ -34,14 +34,11 @@ def compare(old,new):
 while(True):
     print("After 2 Minute Running Start")
     with sync_playwright() as p:
-        
-        
-        for m in range(len(keyCheck)):
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
+        for m in range(len(keyCheck)):            
             # imp monitering special ones
             print("Checking this",keyCheck[m])
-            print("2 reasons why here maybe first time and if not then its bcz new stuff eapeared")
-            browser = p.chromium.launch(headless=True)
-            page = browser.new_page()
             page.goto(f"https://collect.fifa.com/marketplace?tags={keyCheck[m]}")
             page.wait_for_load_state('networkidle')
 
@@ -67,7 +64,7 @@ while(True):
                 for f in change_entSPe:
                     print("Sending req to TG",f)
                     #lichi URL
-                    base = f"https://api.telegram.org/bot7821071523:AAH4T1ZlXLSoltjSF0ep89r1sjB97InuUqA/sendMessage?chat_id=6780967733&text={f}"
+                    base = f"https://api.telegram.org/bot7821071523:AAH4T1ZlXLSoltjSF0ep89r1sjB97InuUqA/sendMessage?chat_id=6780967733&text={g}"
                     print(base)
                     requests.get(base) #send msg
                     time.sleep(2) #wait so no spamming
@@ -87,7 +84,7 @@ while(True):
             requests.get(tell)
             time.sleep(60)
 
-            tell = "https://api.telegram.org/bot7821071523:AAH4T1ZlXLSoltjSF0ep89r1sjB97InuUqA/getUpdates"
+            tell = "https://api.telegram.org/bot7163422787:AAE5zvdjSy3gzyCfDF84eFfG05ZyUUNr0xo/getUpdates"
             res = requests.get(tell)
         priceThreshold = res.json()['result'][-1]['message']['text']
         priceThreshold =str(priceThreshold)
@@ -125,10 +122,10 @@ while(True):
                 #lichi URL
                 base = f"https://api.telegram.org/bot7821071523:AAH4T1ZlXLSoltjSF0ep89r1sjB97InuUqA/sendMessage?chat_id=6780967733&text={g}"
                 #my url
-                #base = f"https://api.telegram.org/bot7163422787:AAE5zvdjSy3gzyCfDF84eFfG05ZyUUNr0xo/sendMessage?chat_id=8068882175&text={g}"
+                # base = f"https://api.telegram.org/bot7163422787:AAE5zvdjSy3gzyCfDF84eFfG05ZyUUNr0xo/sendMessage?chat_id=8068882175&text={g}"
                 requests.get(base) #send msg
                 time.sleep(2) #wait so no spamming
         old_list = list(new_list) #add all new entries into old one
         print("Lets sleep for 2 mint Now")
         browser.close()
-        time.sleep(30)
+        time.sleep(60)

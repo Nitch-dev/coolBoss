@@ -3,9 +3,12 @@ from playwright.sync_api import sync_playwright
 import requests
 import time
 new_list = []
+new_listSPe = []
 old_list = []
+old_listSPe = []
 change_ent = []
-keyCheck = ["27","28","32","51","53","59"]
+change_entSPe = []
+keyCheck = ["m28","m27","m32","m51","m53","m59"]
 
 def StringCheckinList(string, item_list):
 
@@ -14,10 +17,61 @@ def StringCheckinList(string, item_list):
             return True  
 
     return False  
+def compare(old,new):
+            print(new)
+            print("Comparing thje old and new data now")
+            res = [x for x in new if x not in old]
+            if(res): #not equal means
+                #send this res as message
+                return res
+            else:
+                return False
+
+def SpecialStuff(p,ke,old_listSPe,new_listSPe):
+    
+    # imp monitering special ones
+
+    print("Checking this",ke)
+    browser = p.chromium.launch(headless=False)
+    page = browser.new_page()
+    page.goto(f"https://collect.fifa.com/marketplace?tags={ke}")
+    page.wait_for_load_state('networkidle')
+
+    titles = page.locator(".browse-collectible-item_title__dgUCS").all()
+    links = page.locator(".browse-collectible-item_root__4t9EB").all()
+    price = page.locator(".browse-collectible-item_priceStartingAt__RAz61").all()
+    print("Selected")
+    i = 0
+    for t in titles:
+        tt = str(t.inner_text())
+        l = links[i].get_attribute('href')
+        p = price[i].inner_text()
+        
+        message = f"{p} , {tt} , https://collect.fifa.com{l}"
+        new_listSPe.append(message)
+        print("appending Done")
+        i = i+1
+    
+    change_entSPe = compare(old_listSPe,new_listSPe)
+    if(change_entSPe != False):
+        print("So it was False")
+        for f in change_entSPe:
+            print("Sending req to TG",f)
+            #lichi URL
+            base = f"https://api.telegram.org/bot7821071523:AAH4T1ZlXLSoltjSF0ep89r1sjB97InuUqA/sendMessage?chat_id=6780967733&text={g}"
+            print(base)
+            requests.get(base) #send msg
+            time.sleep(2) #wait so no spamming
+            
+    old_listSPe = list(new_listSPe) #add all new entries into old one
+    print("Done for m28 or whatever")
 
 while(True):
-    print("After 1 Minute Running Start")
+    print("After 2 Minute Running Start")
     with sync_playwright() as p:
+        for m in range(len(keyCheck)):
+            SpecialStuff(p,keyCheck[m],old_listSPe,new_listSPe)
+            print("Done ",m)
 
         # Get Value from User for Price and Store here
         BASE_URL = "https://api.telegram.org/bot7821071523:AAH4T1ZlXLSoltjSF0ep89r1sjB97InuUqA/getUpdates"
@@ -49,10 +103,7 @@ while(True):
             tt = str(t.inner_text())
             l = links[i].get_attribute('href')
             p = price[i].inner_text()
-            if(StringCheckinList(tt,keyCheck)):
-                message = f"{p} , {tt} , https://collect.fifa.com{l}"
-                base = f"https://api.telegram.org/bot7821071523:AAH4T1ZlXLSoltjSF0ep89r1sjB97InuUqA/sendMessage?chat_id=6780967733&text={message}"
-                requests.get(base)
+    
             if "2025" not in tt and tt != "":
                 print("here",tt)
                 if(p <= priceThreshold):
@@ -62,20 +113,8 @@ while(True):
             i = i+1
         print("appends are done data should be in new list which is scrapped")
 
-        def compare(old,new):
-            print(new)
-            print("Comparing thje old and new data now")
-            res = [x for x in new if x not in old]
-            if(res): #not equal means
-                #send this res as message
-                print(res)
-                return res
-            else:
-                return False
-        print("starting Compare")
+        
         change_ent = compare(old_list,new_list)
-        print("I have now new Notifi Products")
-        print(change_ent)
         if(change_ent != False):
             for g in change_ent:
                 print("sending Product info",g)

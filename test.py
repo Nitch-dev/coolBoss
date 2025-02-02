@@ -39,7 +39,7 @@ while(True):
         for m in range(len(keyCheck)):            
             # imp monitering special ones
             print("Checking this",keyCheck[m])
-            page.goto(f"https://collect.fifa.com/marketplace?tags={keyCheck[m]}")
+            page.goto(f"https://collect.fifa.com/marketplace?priceHigh=200000&tags={keyCheck[m]}")
             page.wait_for_load_state('networkidle')
 
             titles = page.locator(".browse-collectible-item_title__dgUCS").all()

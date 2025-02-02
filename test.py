@@ -64,7 +64,7 @@ while(True):
                 for f in change_entSPe:
                     print("Sending req to TG",f)
                     #lichi URL
-                    base = f"https://api.telegram.org/bot7821071523:AAH4T1ZlXLSoltjSF0ep89r1sjB97InuUqA/sendMessage?chat_id=6780967733&text={g}"
+                    base = f"https://api.telegram.org/bot7821071523:AAH4T1ZlXLSoltjSF0ep89r1sjB97InuUqA/sendMessage?chat_id=6780967733&text={f}"
                     print(base)
                     requests.get(base) #send msg
                     time.sleep(2) #wait so no spamming
